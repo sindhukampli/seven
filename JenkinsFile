@@ -1,0 +1,93 @@
+pipeline {
+    agent none
+    
+    //triggers {
+      //  cron '00 * * * *'
+        //pollSCM '* * * * *'
+    //}
+    
+    environment {
+        User = 'sindhu'
+        Secret = credentials('demo_secret')
+        cred = credentials('github')
+    }
+    
+    options {
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '1', numToKeepStr: '2'))
+    }
+    
+    parameters {
+        string(defaultValue: 'sindhu', description: 'Enter your ID', name: 'User')
+        booleanParam(defaultValue: true, name: 'MyBoolean')
+        choice(choices: ['DEV', 'TEST', 'PROD', 'UAT'], description: 'Select environment', name: 'ENV')
+    }
+    
+    stages {
+        stage('Stage-1') {
+            agent {
+                label 'java_node'
+            }
+            steps {
+                git branch: 'master', url: 'https://github.com/sindhukampli/seven.git'
+            }
+        }
+
+        stage('Stage-2') {
+            agent {
+                label 'java_node'
+            }
+            steps {
+                echo "Static test cases done"
+                echo "User ID is: ${User}"
+                echo "Boolean Value is: ${params.MyBoolean}"
+                echo "Choice is: ${params.ENV}"
+            }
+            post {
+                success {
+                    echo "Stage-2 completed successfully"
+                }
+            }
+        }
+        
+        stage('Stage-3') {
+            when {
+                allOf {
+                    branch 'master', 'DEV'
+                }
+            }
+            agent {
+                label 'node'
+            }
+            steps {
+                sh 'echo "My Secret credential is: ${demo_secret}"'
+                sh 'echo "My Github cred: ${github}"'
+                echo "Build successful"
+            }
+            post {
+                success {
+                    echo "Stage-3 completed successfully"
+                }
+            }
+        }
+
+        stage('Stage-4') {
+            agent {
+                label 'node'
+            }   
+            steps {
+                echo "Job ${env.JOB_NAME} is running on ${env.JENKINS_URL} and having build no: ${env.BUILD_ID}"
+                echo "Deployed to production"
+            }
+        }
+    }
+    
+    post {
+        always {
+            emailext (
+                subject: "Build Notification",
+                body: "Build has completed.",
+                to: 'sindhukampli@gmail.com'
+            )
+        }
+    }   
+}
