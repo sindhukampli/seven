@@ -59,8 +59,8 @@ pipeline {
                 label 'node'
             }
             steps {
-                sh 'echo "My Secret credential is: ${demo_secret}"'
-                sh 'echo "My Github cred: ${github}"'
+                sh 'echo "My Secret credential is: ${secret}"'
+                sh 'echo "My Github cred: ${cred}"'
                 echo "Build successful"
             }
             post {
