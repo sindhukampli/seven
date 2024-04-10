@@ -49,7 +49,7 @@ pipeline {
 					}
 				}
 			}
-			agent {label 'node'}
+			agent {label 'agent1'}
 			steps {
 				sh 'echo "My Secret credential is: ${JENKINS_DEMO}"'
         			sh 'echo "My Github cred USERNAME:PASSWORD: ${GITHUB_CRED}"'
@@ -65,7 +65,7 @@ pipeline {
 		}
 
 		stage('Stage-4') {
-			agent {label 'node'}	
+			agent {label 'agent1'}	
 			steps {
                 		echo "Job ${env.JOB_NAME} is running on ${env.JENKINS_URL} and having build no: ${env.BUILD_ID}"
 				echo "Deployed to production"
