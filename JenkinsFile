@@ -1,9 +1,9 @@
 pipeline {
 	agent none
-	triggers {
-  		cron '00 * * * *'
-		pollSCM '* * * * * '
-	}
+	//triggers {
+  	//	cron '00 * * * *'
+	//	pollSCM '* * * * * '
+	//}
 	environment {
 		USER_ID='sk'
 		JENKINS_DEMO=credentials('demo_secret')
