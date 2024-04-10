@@ -6,8 +6,8 @@ pipeline {
 	}
 	environment {
 		USER_ID='sk'
-		JENKINS_DEMO=credentials('DEMO_SECRET')
-    		GITHUB_CRED=credentials('gitcred')
+		JENKINS_DEMO=credentials('demo_secret')
+    		GITHUB_CRED=credentials('github')
 	}
 	options {
   		buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '1', numToKeepStr: '2')
