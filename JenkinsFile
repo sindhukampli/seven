@@ -7,7 +7,7 @@ pipeline {
     //}
     
     environment {
-        User = 'sindhu'
+        User = 'sk'
         Secret = credentials('demo_secret')
         cred = credentials('github')
     }
