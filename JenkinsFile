@@ -1,85 +1,72 @@
 pipeline {
-	agent none
-	//triggers {
-  	//	cron '00 * * * *'
-	//	pollSCM '* * * * * '
-	//}
-	environment {
-		USER_ID='sk'
-		JENKINS_DEMO=credentials('demo_secret')
-    		GITHUB_CRED=credentials('50968615-d1f4-4436-8ffa-f1f4232837cf')
-	}
-	options {
-  		buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '1', numToKeepStr: '2')
-	}
-	parameters {
-  		string(defaultValue: 'sk', description: 'Enter your ID', name: 'USER_ID')
-  		booleanParam defaultValue: true, name: 'MyBoolean'
-  		choice choices: ['DEV', 'TEST', 'PROD', 'UAT'], name: 'ENV'
-  	}
-	
-	stages {
-		stage('Stage-1') {
-			agent {label 'java_node'}
-			steps {
-				git branch: 'master', url: 'https://github.com/sindhukampli/seven.git'
-			}
-		}
-
-		stage('Stage-2') {
-			agent {label 'java_node'}
-			steps {
-				echo "Static test cases done"
-				echo "User ID is: ${USER_ID}"
-				echo "Boolean Value is: ${MyBoolean}"
-				echo "Choice is: ${ENV}"
-			}
-			post {
-                		success {
-                    			echo "Stage-2 completed successfully"
-                		}
-			}
-		}
-		
-		stage('Stage-3') {
-			when{
-  				allOf{
-					expression{
-						branch 'master, DEV'
-					}
-				}
-			}
-			agent {label 'agent1'}
-			steps {
-				sh 'echo "My Secret credential is: ${JENKINS_DEMO}"'
-        			sh 'echo "My Github cred USERNAME:PASSWORD: ${GITHUB_CRED}"'
-        			sh 'echo "My Github  user cred: ${GITHUB_CRED_USR}"'
-        			sh 'echo "My Github password is: ${GITHUB_CRED_PSW}"'
-				echo "Build successful"
-			}
-			post {
-                		success {
-                    			echo "Stage-3 completed successfully"
-                		}
-			}
-		}
-
-		stage('Stage-4') {
-			agent {label 'agent1'}	
-			steps {
-                		echo "Job ${env.JOB_NAME} is running on ${env.JENKINS_URL} and having build no: ${env.BUILD_ID}"
-				echo "Deployed to production"
-			}
-		}
-	}
-	post {
-  		always {
-    			emailext (
-                		subject: "Build Notification",
-               			body: "Build has completed.",
-				to: 'sindhukampli@gmail.com',
-			
-            		)
-  		}
-	}	
+    agent none
+    
+    environment {
+        STRING_VAR = "Hello, world!"
+        CHOICE_VAR = "Option 2"
+        BOOLEAN_VAR = true
+    }
+    
+    stages {
+        stage('Agent 1 - Stage 1') {
+            agent { label 'agent1' }
+            steps {
+                script {
+                    // Use global variable
+                    def globalVar = "Global Variable"
+                    echo "This is stage 1 running on agent 1"
+                    echo "Global variable value: ${globalVar}"
+                }
+            }
+        }
+        
+        stage('Agent 1 - Stage 2') {
+            agent { label 'agent1' }
+            steps {
+                echo "This is stage 2 running on agent 1"
+            }
+        }
+        
+        stage('Agent 2 - Stage 3') {
+            agent { label 'agent2' }
+            when {
+                expression { return env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'Dev' }
+            }
+            steps {
+                echo "This is stage 3 running on agent 2"
+            }
+        }
+        
+        stage('Agent 2 - Stage 4') {
+            agent { label 'agent2' }
+            steps {
+                echo "This is stage 4 running on agent 2"
+            }
+        }
+    }
+    
+  //  triggers {
+        //cron('H */6 * * 1-5') // Run every 6 hours on weekdays
+        //pollSCM('* * * * *') // Poll SCM every minute
+   // }
+    
+    post {
+        success {
+            mail to: 'sindhukampli@gmail.com',
+                subject: 'Pipeline Success',
+                body: "The pipeline has completed successfully."
+        }
+        failure {
+            mail to: 'sindhukampli@gmail.com',
+                subject: 'Pipeline Failure',
+                body: "The pipeline has failed."
+        }
+    }
+    
+    environment {
+        SECRET_TEXT = credentials('my-credentials-id')
+USERNAM=creentials('my_user_name')
+    }
+    
+   
 }
