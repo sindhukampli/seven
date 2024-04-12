@@ -52,7 +52,7 @@ credentials credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePass
     }
     
   //  triggers {
-        //cron('H */6 * * 1-5') // Run every 6 hours on weekdays
+        //cron('H * * * 1-5') // Run every 6 hours on weekdays
         //pollSCM('* * * * *') // Poll SCM every minute
    // }
     
