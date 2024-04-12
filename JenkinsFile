@@ -5,8 +5,8 @@ pipeline {
         STRING_VAR = "Hello, world!"
         CHOICE_VAR = "Option 2"
         BOOLEAN_VAR = true
-SECRET_TEXT = credentials('my-credentials-id')
-USERNAME=creentials('my_user_name')
+SECRET_TEXT = credentials('demo_secret')
+USERNAME=credentials('sindhukampli')
     }
     
     stages {
