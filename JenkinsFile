@@ -5,9 +5,13 @@ pipeline {
         STRING_VAR = "Hello, world!"
         CHOICE_VAR = "Option 2"
         BOOLEAN_VAR = true
-SECRET_TEXT = credentials('demo_secret')
-USERNAME=credentials('sindhukampli')
+
     }
+parameters {
+  credentials credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl', defaultValue: 'demo_secret', name: 'SECRET_TEXT', required: false
+credentials credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl', defaultValue: '50968615-d1f4-4436-8ffa-f1f4232837cf', name: 'USERNAME', required: false
+}
+
     
     stages {
         stage('Agent 1 - Stage 1') {
